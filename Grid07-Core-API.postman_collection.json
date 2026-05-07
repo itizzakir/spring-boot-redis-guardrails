@@ -1,0 +1,202 @@
+{
+  "info": {
+    "name": "Grid07 Core API",
+    "description": "Basic requests for the Grid07 Spring Boot intern assignment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "botId",
+      "value": "1"
+    },
+    {
+      "key": "postId",
+      "value": "1"
+    },
+    {
+      "key": "commentId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "List Users",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/users"
+      }
+    },
+    {
+      "name": "List Bots",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/bots"
+      }
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"new-user\",\n  \"premium\": false\n}"
+        },
+        "url": "{{baseUrl}}/api/users"
+      }
+    },
+    {
+      "name": "Create Bot",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"helper-bot\",\n  \"personaDescription\": \"Helpful and short replies\"\n}"
+        },
+        "url": "{{baseUrl}}/api/bots"
+      }
+    },
+    {
+      "name": "Create Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('postId', body.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"authorType\": \"USER\",\n  \"authorId\": {{userId}},\n  \"content\": \"First post for Grid07 assignment testing\"\n}"
+        },
+        "url": "{{baseUrl}}/api/posts"
+      }
+    },
+    {
+      "name": "Human Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('commentId', body.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"authorType\": \"USER\",\n  \"authorId\": 2,\n  \"content\": \"This is a human comment\"\n}"
+        },
+        "url": "{{baseUrl}}/api/posts/{{postId}}/comments"
+      }
+    },
+    {
+      "name": "Bot Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"authorType\": \"BOT\",\n  \"authorId\": {{botId}},\n  \"content\": \"Bot reply allowed by Redis guardrails\"\n}"
+        },
+        "url": "{{baseUrl}}/api/posts/{{postId}}/comments"
+      }
+    },
+    {
+      "name": "Bot Reply To Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"authorType\": \"BOT\",\n  \"authorId\": 2,\n  \"content\": \"Replying to a human comment\",\n  \"parentCommentId\": {{commentId}}\n}"
+        },
+        "url": "{{baseUrl}}/api/posts/{{postId}}/comments"
+      }
+    },
+    {
+      "name": "Like Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": 2\n}"
+        },
+        "url": "{{baseUrl}}/api/posts/{{postId}}/like"
+      }
+    },
+    {
+      "name": "Get Virality Score",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/posts/{{postId}}/virality"
+      }
+    },
+    {
+      "name": "Get Comments",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/posts/{{postId}}/comments"
+      }
+    }
+  ]
+}
